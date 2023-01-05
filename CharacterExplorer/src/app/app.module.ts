@@ -31,7 +31,7 @@ export const AIRTABLE_BASE_URL = new InjectionToken<string>('AirtableUrl');
   providers: [
     {
       provide: MARVEL_API_KEY,
-      useValue: 'd9c0c5171c94a210303eeaafe3ed9854',
+      useValue: 'TOKEN',
     },
     {
       provide: MARVEL_BASE_URL,
@@ -39,7 +39,7 @@ export const AIRTABLE_BASE_URL = new InjectionToken<string>('AirtableUrl');
     },
     {
       provide: AIRTABLE_PAT,
-      useValue: 'pat3LQPpy6kvToyvy.2c368f8d0b12b375517008e8b7152b8daa9f8fdda6577253e02edecba1824134'
+      useValue: 'TOKEN'
     },
     {
       provide: AIRTABLE_BASE_URL,
