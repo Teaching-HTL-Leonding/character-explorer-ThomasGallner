@@ -19,7 +19,7 @@
   </div>
 
   <div class="row row-cols-4 row-cols-md-4 g-4">
-    <div *ngFor="let hero of filteredHeroes" class="col">
+    <div *ngFor="let hero of getFilteredHeroes()" class="col">
       <div class="card h-100" (click)="navigateToDetails(hero.id)">
         <img [src]="hero.thumbnail.path + '.' + hero.thumbnail.extension" class="card-img-top" alt="hero image">
         <div class="card-body">

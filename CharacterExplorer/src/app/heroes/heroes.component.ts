@@ -36,14 +36,23 @@ export class HeroesComponent implements OnInit {
       .subscribe(data => {
         this.marvelData = data;
         for (let hero of this.marvelData?.data?.results!) {
-          if (hero.name.toLowerCase().includes(this.heroNameSearch)) {
-            this.filteredHeroes.push(hero);
-          }
           if(this.airtableService.favoriteHeroesIds.includes(hero.id)){
             this.favoriteHeroes.push(hero);
           }
         }
       });
+  }
+
+  public getFilteredHeroes() {
+    let results: Result[] = [];
+
+    for (let hero of this.marvelData?.data?.results!) {
+      if (hero.name.toLowerCase().includes(this.heroNameSearch)) {
+        results.push(hero);
+      }
+    }
+
+    return results;
   }
 
   public navigateToDetails(heroId: number) {
