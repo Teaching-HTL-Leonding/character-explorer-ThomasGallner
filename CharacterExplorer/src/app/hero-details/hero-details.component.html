@@ -1,0 +1,12 @@
+<div class="container">
+  <img [src]="hero?.thumbnail?.path + '.' + hero?.thumbnail?.extension" alt="hero image">
+  <h1>{{hero?.name}}</h1>
+
+  <h3 [hidden]="hero?.description === ''">Description:</h3>
+  <p>{{hero?.description}}</p>
+
+  <h3 [hidden]="hero?.series?.items?.length === 0">Series:</h3>
+  <p *ngFor="let s of hero?.series?.items">
+    {{s.name}}
+  </p>
+</div>
