@@ -26,4 +26,8 @@ export class HeroDetailsComponent implements OnInit {
       .loadHero(this.heroId)
       .subscribe((data) => (this.hero = data.data.results[0]));
   }
+
+  public addFavoriteHero(heroId: number){
+    this.airtableService.addFavoriteHeroId(heroId).subscribe(() => this.airtableService.loadFavoriteHeroesIds());
+  }
 }

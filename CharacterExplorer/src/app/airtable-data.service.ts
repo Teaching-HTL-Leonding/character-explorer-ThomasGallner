@@ -9,7 +9,7 @@ export interface AirtableRoot {
 
 export interface AirtableRecord {
   fields: AirtableFields;
-  id: string;
+  id?: string;
 }
 
 export interface AirtableFields {
@@ -20,21 +20,44 @@ export interface AirtableFields {
   providedIn: 'root',
 })
 export class AirtableDataService {
-  constructor(private http: HttpClient, @Inject(AIRTABLE_BASE_URL) private baseUrl: string) {
-  }
-  public loadFavoriteHeroes(): Observable<AirtableRoot> {
-    return this.http.get<AirtableRoot>(
-      `${this.baseUrl}/v0/appqJroNsgQsxxmTA/MarvelHeroes`
-    );
+  public favoriteHeroesIds: number[];
+  private favoriteHeroData?: AirtableRoot;
+
+  constructor(
+    private http: HttpClient,
+    @Inject(AIRTABLE_BASE_URL) private baseUrl: string
+  ) {
+    this.favoriteHeroesIds = [];
   }
 
-  // public deleteFavoriteHero(id: string): Observable<unknown> {
-  //   const body = {
-  //     fields: fields,
-  //   };
-  //   return this.http.patch(
-  //     `https://api.airtable.com/v0/app5jvVBBLNcWUL3M/WeatherData/${id}`,
-  //     body
-  //   );
-  // }
+  public loadFavoriteHeroesIds() {
+    return this.http
+      .get<AirtableRoot>(`${this.baseUrl}/v0/appqJroNsgQsxxmTA/MarvelHeroes`)
+      .subscribe((data) => {
+        this.favoriteHeroData = data;
+        for (let record of data.records) {
+          this.favoriteHeroesIds.push(parseInt(record.fields.HeroId));
+        }
+      });
+  }
+
+  public addFavoriteHeroId(heroId: number) {
+    const body: AirtableRoot = {
+      records: [{ fields:  {HeroId: heroId.toString()}}],
+    };
+
+    return this.http.post(`${this.baseUrl}/v0/appqJroNsgQsxxmTA/MarvelHeroes`, body);
+  }
+
+  public deleteFavoriteHeroId(heroId: number) {
+    let recordId = '';
+    for (let record of this.favoriteHeroData?.records!){
+      if (parseInt(record.fields.HeroId) === heroId){
+        recordId = record.id!;
+        break;
+      }
+    }
+
+    return this.http.delete(`${this.baseUrl}/v0/appqJroNsgQsxxmTA/MarvelHeroes/${recordId}`);
+  }
 }

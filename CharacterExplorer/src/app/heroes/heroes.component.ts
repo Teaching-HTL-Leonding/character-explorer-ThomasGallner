@@ -13,9 +13,10 @@ import {
   styleUrls: ['./heroes.component.css'],
 })
 export class HeroesComponent implements OnInit {
-  private marvelData?: Root;
+  public marvelData?: Root;
   public heroNameSearch: string;
-  public favoriteHeroesIds: number[];
+  public filteredHeroes: Result[];
+  public favoriteHeroes: Result[];
 
   constructor(
     public marvelService: MarvelDataService,
@@ -23,35 +24,26 @@ export class HeroesComponent implements OnInit {
     private router: Router
   ) {
     this.heroNameSearch = '';
-    this.favoriteHeroesIds = [];
+    this.filteredHeroes = [];
+    this.favoriteHeroes = [];
   }
 
   ngOnInit(): void {
+    this.airtableService.loadFavoriteHeroesIds();
+
     this.marvelService
       .loadHeroes()
-      .subscribe((data) => (this.marvelData = data));
-
-    this.airtableService.loadFavoriteHeroes().subscribe((data) => {
-      for (let record of data.records) {
-        this.favoriteHeroesIds.push(parseInt(record.fields.HeroId));
-      }
-    });
-  }
-
-  public getHeroes() {
-    return this.marvelData?.data?.results;
-  }
-
-  public getFilteredHeroes() {
-    let results: Result[] = [];
-
-    for (let hero of this.marvelData?.data?.results!) {
-      if (hero.name.toLowerCase().includes(this.heroNameSearch)) {
-        results.push(hero);
-      }
-    }
-
-    return results;
+      .subscribe(data => {
+        this.marvelData = data;
+        for (let hero of this.marvelData?.data?.results!) {
+          if (hero.name.toLowerCase().includes(this.heroNameSearch)) {
+            this.filteredHeroes.push(hero);
+          }
+          if(this.airtableService.favoriteHeroesIds.includes(hero.id)){
+            this.favoriteHeroes.push(hero);
+          }
+        }
+      });
   }
 
   public navigateToDetails(heroId: number) {
